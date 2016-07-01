@@ -41,7 +41,7 @@ public interface ICacheStrategy {
     void set(String key, boolean value);
 
     /**
-     * st boolean.
+     * set boolean.
      *
      * @param key    key
      * @param value  value

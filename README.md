@@ -35,7 +35,8 @@ There are two level cache in ECache.
 
 # Todo
 
-support more type
+1. support more type
+2. auto clear
 
 # Install
 
