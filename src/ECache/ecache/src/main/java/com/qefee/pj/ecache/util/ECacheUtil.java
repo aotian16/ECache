@@ -16,10 +16,19 @@ public class ECacheUtil {
 
     private static ECache cache;
 
+    /**
+     * get a default Context.
+     * should call {@link #init} first
+     * @return ECache
+     */
     public static ECache getCache() {
         return cache;
     }
 
+    /**
+     * init a ECache.
+     * @param context Context
+     */
     public static void init(Context context) {
         cache = new ECache(context);
     }
