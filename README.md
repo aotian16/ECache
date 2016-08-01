@@ -17,7 +17,15 @@ There are two level cache in ECache.
 |  5   | float      |    √    |
 |  6   | double     |    √    |
 |  7   | String     |    √    |
-|  8   | JSONObject |    √    |
+|  8   | Object [1] |    √    |
+|  9   | List       |    √    |
+|  10  | Array      |    √    |
+|  11  | Map        |    √    |
+|  12  | Set        |    √    |
+
+**attention**
+
+[1] Object should support gson
 
 # Usage
 
@@ -35,8 +43,7 @@ There are two level cache in ECache.
 
 # Todo
 
-1. support more type
-2. auto clear
+1. auto clear
 
 # Install
 
@@ -49,6 +56,7 @@ There are two level cache in ECache.
 | No.  | Version | Detail        |
 | ---- | ------- | ------------- |
 | 1    | 1.0.0   | first version |
+| 2    | 2.0.0   | refactor      |
 
 # [LICENSE](https://github.com/aotian16/ECache/blob/master/LICENSE)
 
