@@ -2,8 +2,6 @@ package com.qefee.pj.ecache.cache;
 
 import com.qefee.pj.ecache.item.CacheItem;
 
-import org.json.JSONObject;
-
 /**
  * ICacheStrategy.
  * <ul>
@@ -266,38 +264,38 @@ public interface ICacheStrategy {
     // JSONObject
 
     /**
-     * get JSONObject if exists or null.
+     * get E if exists or null.
      *
      * @param key key
      * @return value
      */
-    JSONObject getJSONObject(String key);
+    <E> E getJSONObject(String key, Class<E> eClass);
 
     /**
-     * get JSONObject if exists or def.
+     * get E if exists or def.
      *
      * @param key key
      * @param def def
      * @return value
      */
-    JSONObject getJSONObject(String key, JSONObject def);
+    <E> E getJSONObject(String key, E def, Class<E> eClass);
 
     /**
-     * set JSONObject.
+     * set E.
      *
      * @param key   key
      * @param value value
      */
-    void set(String key, JSONObject value);
+    <E> void set(String key, E value, Class<E> eClass);
 
     /**
-     * set JSONObject.
+     * set E.
      *
      * @param key    key
      * @param value  value
      * @param during during
      */
-    void set(String key, JSONObject value, long during);
+    <E> void set(String key, E value, long during, Class<E> eClass);
 
     /**
      * has item
@@ -318,7 +316,14 @@ public interface ICacheStrategy {
      * @param key key
      * @return item
      */
-    CacheItem getCacheItem(String key);
+    <T> CacheItem<T> getCacheItem(String key, Class<CacheItem<T>> tClass);
+
+    /**
+     * set origin cache item.
+     * @param key key
+     * @return item
+     */
+    <T> void setCacheItem(String key, T value, long during, Class<CacheItem<T>> tClass);
 
     /**
      * clear dead items.

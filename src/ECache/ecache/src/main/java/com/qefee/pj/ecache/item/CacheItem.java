@@ -34,6 +34,10 @@ public class CacheItem<T> {
      */
     private int count;
 
+    public Class getGenericType(int index) {
+        return getClass();
+    }
+
     public String getKey() {
         return key;
     }

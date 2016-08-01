@@ -4,23 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.qefee.pj.ecache.item.BooleanCacheItem;
 import com.qefee.pj.ecache.item.CacheItem;
-import com.qefee.pj.ecache.item.CharacterCacheItem;
-import com.qefee.pj.ecache.item.DoubleCacheItem;
-import com.qefee.pj.ecache.item.FloatCacheItem;
-import com.qefee.pj.ecache.item.IntCacheItem;
-import com.qefee.pj.ecache.item.JSONObjectCacheItem;
-import com.qefee.pj.ecache.item.LongCacheItem;
-import com.qefee.pj.ecache.item.StringCacheItem;
 import com.qefee.pj.ecache.util.DateUtil;
 import com.qefee.pj.ecache.util.GsonUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * PreferencesCacheStrategy.
@@ -33,6 +23,7 @@ import java.util.Map;
 public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     public static final String NAME = "ecache";
+    public static final String KEY_PREFIX = NAME + "_";
 
     SharedPreferences sharedPreferences;
 
@@ -51,24 +42,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public boolean getBoolean(String key, boolean def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            BooleanCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, BooleanCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, boolean.class);
     }
 
     @Override
@@ -78,20 +52,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, boolean value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            BooleanCacheItem newItem = newBooleanCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            BooleanCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, BooleanCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, boolean.class);
     }
 
     @Override
@@ -101,24 +62,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public int getInt(String key, int def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            IntCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, IntCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, int.class);
     }
 
     @Override
@@ -128,20 +72,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, int value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            IntCacheItem newItem = newIntCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            IntCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, IntCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, int.class);
     }
 
     @Override
@@ -151,24 +82,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public long getLong(String key, long def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            LongCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, LongCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, long.class);
     }
 
     @Override
@@ -178,20 +92,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, long value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            LongCacheItem newItem = newLongCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            LongCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, LongCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, long.class);
     }
 
     @Override
@@ -201,24 +102,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public char getChar(String key, char def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            CharacterCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, CharacterCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, char.class);
     }
 
     @Override
@@ -228,20 +112,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, char value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            CharacterCacheItem newItem = newCharacterCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            CharacterCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, CharacterCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, char.class);
     }
 
     @Override
@@ -251,24 +122,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public float getFloat(String key, float def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            FloatCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, FloatCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, float.class);
     }
 
     @Override
@@ -278,20 +132,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, float value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            FloatCacheItem newItem = newFloatCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            FloatCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, FloatCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, float.class);
     }
 
     @Override
@@ -301,24 +142,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public double getDouble(String key, double def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            DoubleCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, DoubleCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, double.class);
     }
 
     @Override
@@ -328,20 +152,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, double value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            DoubleCacheItem newItem = newDoubleCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            DoubleCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, DoubleCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, double.class);
     }
 
     @Override
@@ -351,24 +162,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public String getString(String key, String def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            StringCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, StringCacheItem.class);
-
-            if (DateUtil.isCacheItemAlive(item)) {
-                int count = item.getCount();
-                count++;
-                item.setCount(count);
-
-                saveItem(key, item);
-                return item.getValue();
-            } else {
-                return def;
-            }
-        }
+        return getItem(key, def, String.class);
     }
 
     @Override
@@ -378,89 +172,27 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public void set(String key, String value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            StringCacheItem newItem = newStringCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            StringCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, StringCacheItem.class);
-            item.setValue(value);
-            long time = System.currentTimeMillis();
-            item.setUpdateTime(time);
-            item.setDeleteTime(time + during);
-
-            saveItem(key, item);
-        }
+        setItem(key, value, during, String.class);
     }
 
     @Override
-    public JSONObject getJSONObject(String key) {
-        return getJSONObject(key, null);
+    public <E> E getJSONObject(String key, Class<E> eClass) {
+        return getJSONObject(key, null, eClass);
     }
 
     @Override
-    public JSONObject getJSONObject(String key, JSONObject def) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            return def;
-        } else {
-            StringCacheItem strItem = GsonUtil.getGson().fromJson(itemJsonStr, StringCacheItem.class);
-            String value = strItem.getValue();
-            JSONObject jsonObj;
-            try {
-                jsonObj = new JSONObject(value);
-                JSONObjectCacheItem item = newJSONObjectCacheItem(key, jsonObj, DateUtil.TIME_UNIT_MINUTE);
-
-                if (DateUtil.isCacheItemAlive(item)) {
-                    int count = item.getCount();
-                    count++;
-                    item.setCount(count);
-
-                    saveItem(key, item);
-                    return item.getValue();
-                } else {
-                    return def;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return def;
-            }
-
-        }
+    public <E> E getJSONObject(String key, E def, Class<E> eClass) {
+        return getItem(key, def, eClass);
     }
 
     @Override
-    public void set(String key, JSONObject value) {
-        set(key, value, DateUtil.TIME_UNIT_MINUTE);
+    public <E> void set(String key, E value, Class<E> eClass) {
+        set(key, value, DateUtil.TIME_UNIT_MINUTE, eClass);
     }
 
     @Override
-    public void set(String key, JSONObject value, long during) {
-        String itemJsonStr = sharedPreferences.getString(key, "");
-
-        if (TextUtils.isEmpty(itemJsonStr)) {
-            JSONObjectCacheItem newItem = newJSONObjectCacheItem(key, value, during);
-            saveItem(key, newItem);
-        } else {
-            StringCacheItem strItem = GsonUtil.getGson().fromJson(itemJsonStr, StringCacheItem.class);
-
-            String itemValue = strItem.getValue();
-            JSONObject jsonObj;
-            try {
-                jsonObj = new JSONObject(itemValue);
-                JSONObjectCacheItem item = newJSONObjectCacheItem(key, jsonObj, DateUtil.TIME_UNIT_MINUTE);
-                item.setValue(value);
-                long time = System.currentTimeMillis();
-                item.setUpdateTime(time);
-                item.setDeleteTime(time + during);
-
-                saveItem(key, item);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    public <E> void set(String key, E value, long during, Class<E> eClass) {
+        setItem(key, value, during, eClass);
     }
 
     @Override
@@ -474,12 +206,30 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
     }
 
     @Override
-    public CacheItem getCacheItem(String key) {
+    public <T> CacheItem<T> getCacheItem(String key, Class<CacheItem<T>> tClass) {
         String string = sharedPreferences.getString(key, "");
         if (TextUtils.isEmpty(string)) {
             return null;
         } else {
-            return GsonUtil.getGson().fromJson(string, StringCacheItem.class);
+            return GsonUtil.getGson().fromJson(string, tClass);
+        }
+    }
+
+    @Override
+    public <T> void setCacheItem(String key, T value, long during, Class<CacheItem<T>> tClass) {
+        String itemJsonStr = sharedPreferences.getString(key, "");
+
+        if (TextUtils.isEmpty(itemJsonStr)) {
+            CacheItem newItem = newCacheItem(key, value, during);
+            saveItem(key, newItem);
+        } else {
+            CacheItem<T> item = GsonUtil.getGson().fromJson(itemJsonStr, tClass);
+            item.setValue(value);
+            long time = System.currentTimeMillis();
+            item.setUpdateTime(time);
+            item.setDeleteTime(time + during);
+
+            saveItem(key, item);
         }
     }
 
@@ -499,7 +249,7 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
             if (TextUtils.isEmpty(itemJsonStr)) {
                 edit.remove(key);
             } else {
-                StringCacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, StringCacheItem.class);
+                CacheItem item = GsonUtil.getGson().fromJson(itemJsonStr, CacheItem.class);
                 if (!DateUtil.isCacheItemAlive(item)) {
                     edit.remove(key);
                 }
@@ -510,7 +260,17 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
 
     @Override
     public int size(int level) {
-        return sharedPreferences.getAll().size();
+        Map<String, ?> all = sharedPreferences.getAll();
+        Set<String> keySet = all.keySet();
+
+        int count = 0;
+        for (String key:keySet) {
+            if (key.startsWith(KEY_PREFIX)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private void saveItem(String key, CacheItem item) {
@@ -519,5 +279,46 @@ public class PreferencesCacheStrategy extends AbstractCacheStrategy {
         SharedPreferences.Editor edit = sharedPreferences.edit();
         edit.putString(key, jsonStr);
         edit.apply();
+    }
+
+    private <T> T getItem(String key, T def, Class<T> tClass) {
+        String realKey = KEY_PREFIX + key;
+        String itemJsonStr = sharedPreferences.getString(realKey, "");
+
+        if (TextUtils.isEmpty(itemJsonStr)) {
+            return def;
+        } else {
+            CacheItem<T> item = GsonUtil.getGson().fromJson(itemJsonStr, tClass.getGenericSuperclass());
+
+            if (DateUtil.isCacheItemAlive(item)) {
+                int count = item.getCount();
+                count++;
+                item.setCount(count);
+
+                saveItem(realKey, item);
+                return item.getValue();
+            } else {
+                return def;
+            }
+        }
+    }
+
+    public <T> void setItem(String key, T value, long during, Class<T> tClass) {
+        String realKey = KEY_PREFIX + key;
+        String itemJsonStr = sharedPreferences.getString(realKey, "");
+
+        if (TextUtils.isEmpty(itemJsonStr)) {
+            CacheItem newItem = newCacheItem(realKey, value, during);
+            saveItem(realKey, newItem);
+        } else {
+            CacheItem<T> temp = new CacheItem<>();
+            CacheItem<T> item = GsonUtil.getGson().fromJson(itemJsonStr, temp.getClass());
+            item.setValue(value);
+            long time = System.currentTimeMillis();
+            item.setUpdateTime(time);
+            item.setDeleteTime(time + during);
+
+            saveItem(realKey, item);
+        }
     }
 }

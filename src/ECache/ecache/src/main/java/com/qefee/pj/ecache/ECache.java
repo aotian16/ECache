@@ -6,18 +6,7 @@ import com.qefee.pj.ecache.cache.AbstractCacheStrategy;
 import com.qefee.pj.ecache.cache.ICacheStrategy;
 import com.qefee.pj.ecache.cache.MemoryCacheStrategy;
 import com.qefee.pj.ecache.cache.PreferencesCacheStrategy;
-import com.qefee.pj.ecache.item.BooleanCacheItem;
 import com.qefee.pj.ecache.item.CacheItem;
-import com.qefee.pj.ecache.item.CharacterCacheItem;
-import com.qefee.pj.ecache.item.DoubleCacheItem;
-import com.qefee.pj.ecache.item.FloatCacheItem;
-import com.qefee.pj.ecache.item.IntCacheItem;
-import com.qefee.pj.ecache.item.JSONObjectCacheItem;
-import com.qefee.pj.ecache.item.LongCacheItem;
-import com.qefee.pj.ecache.item.StringCacheItem;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * ECache.
@@ -53,7 +42,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getBoolean(key, def);
         } else if (preferencesCache.has(key)) {
-            saveBooleanItemToMemory(key);
+            CacheItem<Boolean> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getBoolean(key, def);
         } else {
             return def;
@@ -83,7 +73,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getInt(key, def);
         } else if (preferencesCache.has(key)) {
-            saveIntItemToMemory(key);
+            CacheItem<Integer> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getInt(key, def);
         } else {
             return def;
@@ -112,7 +103,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getLong(key, def);
         } else if (preferencesCache.has(key)) {
-            saveLongItemToMemory(key);
+            CacheItem<Long> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getLong(key, def);
         } else {
             return def;
@@ -141,7 +133,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getChar(key, def);
         } else if (preferencesCache.has(key)) {
-            saveCharacterItemToMemory(key);
+            CacheItem<Character> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getChar(key, def);
         } else {
             return def;
@@ -170,7 +163,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getFloat(key, def);
         } else if (preferencesCache.has(key)) {
-            saveFloatItemToMemory(key);
+            CacheItem<Float> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getFloat(key, def);
         } else {
             return def;
@@ -199,7 +193,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getDouble(key, def);
         } else if (preferencesCache.has(key)) {
-            saveDoubleItemToMemory(key);
+            CacheItem<Double> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getDouble(key, def);
         } else {
             return def;
@@ -228,7 +223,8 @@ public class ECache extends AbstractCacheStrategy {
         if (memoryCache.has(key)) {
             return memoryCache.getString(key, def);
         } else if (preferencesCache.has(key)) {
-            saveStringItemToMemory(key);
+            CacheItem<String> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
             return preferencesCache.getString(key, def);
         } else {
             return def;
@@ -248,32 +244,33 @@ public class ECache extends AbstractCacheStrategy {
     }
 
     @Override
-    public JSONObject getJSONObject(String key) {
-        return getJSONObject(key, null);
+    public <E> E getJSONObject(String key, Class<E> eClass) {
+        return getJSONObject(key, null, eClass);
     }
 
     @Override
-    public JSONObject getJSONObject(String key, JSONObject def) {
+    public <E> E getJSONObject(String key, E def, Class<E> eClass) {
         if (memoryCache.has(key)) {
-            return memoryCache.getJSONObject(key, def);
+            return memoryCache.getJSONObject(key, def, eClass);
         } else if (preferencesCache.has(key)) {
-            saveJSONObjectItemToMemory(key);
-            return preferencesCache.getJSONObject(key, def);
+            CacheItem<E> t = new CacheItem<>();
+            saveItemToMemory(key, t.getGenericType(0));
+            return preferencesCache.getJSONObject(key, def, eClass);
         } else {
             return def;
         }
     }
 
     @Override
-    public void set(String key, JSONObject value) {
-        memoryCache.set(key, value);
-        preferencesCache.set(key, value);
+    public <E> void set(String key, E value, Class<E> eClass) {
+        memoryCache.set(key, value, eClass);
+        preferencesCache.set(key, value, eClass);
     }
 
     @Override
-    public void set(String key, JSONObject value, long during) {
-        memoryCache.set(key, value, during);
-        preferencesCache.set(key, value, during);
+    public <E> void set(String key, E value, long during, Class<E> eClass) {
+        memoryCache.set(key, value, during, eClass);
+        preferencesCache.set(key, value, during, eClass);
     }
 
     @Override
@@ -289,14 +286,20 @@ public class ECache extends AbstractCacheStrategy {
     }
 
     @Override
-    public CacheItem getCacheItem(String key) {
+    public <T> CacheItem<T> getCacheItem(String key, Class<CacheItem<T>> tClass) {
         if (memoryCache.has(key)) {
-            return memoryCache.getCacheItem(key);
+            return memoryCache.getCacheItem(key, tClass);
         } else if (preferencesCache.has(key)) {
-            return preferencesCache.getCacheItem(key);
+            return preferencesCache.getCacheItem(key, tClass);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public <T> void setCacheItem(String key, T value, long during, Class<CacheItem<T>> tClass) {
+        memoryCache.setCacheItem(key, value, during, tClass);
+        preferencesCache.setCacheItem(key, value, during, tClass);
     }
 
     @Override
@@ -322,103 +325,15 @@ public class ECache extends AbstractCacheStrategy {
         return size;
     }
 
-    private void saveBooleanItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        BooleanCacheItem nItem = new BooleanCacheItem();
+    private <T> void saveItemToMemory(String key, Class<CacheItem<T>> tClass) {
+        CacheItem<T> item = preferencesCache.getCacheItem(key, tClass);
+        CacheItem<T> nItem = new CacheItem<>();
         nItem.setKey(item.getKey());
-        nItem.setValue(Boolean.parseBoolean(item.getValue().toString()));
+        nItem.setValue(item.getValue());
         nItem.setCreateTime(item.getCreateTime());
         nItem.setUpdateTime(item.getUpdateTime());
         nItem.setDeleteTime(item.getDeleteTime());
         nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveIntItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        IntCacheItem nItem = new IntCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(Integer.parseInt(item.getValue().toString()));
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveLongItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        LongCacheItem nItem = new LongCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(Long.parseLong(item.getValue().toString()));
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveFloatItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        FloatCacheItem nItem = new FloatCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(Float.parseFloat(item.getValue().toString()));
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveDoubleItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        DoubleCacheItem nItem = new DoubleCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(Double.parseDouble(item.getValue().toString()));
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveCharacterItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        CharacterCacheItem nItem = new CharacterCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(item.getValue().toString().charAt(0));
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveStringItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        StringCacheItem nItem = new StringCacheItem();
-        nItem.setKey(item.getKey());
-        nItem.setValue(item.getValue().toString());
-        nItem.setCreateTime(item.getCreateTime());
-        nItem.setUpdateTime(item.getUpdateTime());
-        nItem.setDeleteTime(item.getDeleteTime());
-        nItem.setCount(item.getCount());
-        memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-    }
-
-    private void saveJSONObjectItemToMemory(String key) {
-        CacheItem item = preferencesCache.getCacheItem(key);
-        JSONObjectCacheItem nItem = new JSONObjectCacheItem();
-        nItem.setKey(item.getKey());
-        try {
-            nItem.setValue(new JSONObject(item.getValue().toString()));
-            nItem.setCreateTime(item.getCreateTime());
-            nItem.setUpdateTime(item.getUpdateTime());
-            nItem.setDeleteTime(item.getDeleteTime());
-            nItem.setCount(item.getCount());
-            memoryCache.set(key, nItem.getValue(), nItem.getDeleteTime() - nItem.getUpdateTime());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        memoryCache.set(key, nItem, nItem.getDeleteTime() - nItem.getUpdateTime(), tClass);
     }
 }
