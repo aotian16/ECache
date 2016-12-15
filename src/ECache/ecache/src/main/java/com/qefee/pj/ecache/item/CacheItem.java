@@ -1,5 +1,10 @@
 package com.qefee.pj.ecache.item;
 
+import java.util.Locale;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * CacheItem.
  * <ul>
@@ -8,15 +13,16 @@ package com.qefee.pj.ecache.item;
  *
  * @author tongjin
  */
-public class CacheItem<T> {
+public class CacheItem extends RealmObject {
     /**
      * item key.
      */
+    @PrimaryKey
     private String key;
     /**
      * item value.
      */
-    private T value;
+    private String value;
     /**
      * create time.
      */
@@ -46,11 +52,11 @@ public class CacheItem<T> {
         this.key = key;
     }
 
-    public T getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
@@ -84,5 +90,10 @@ public class CacheItem<T> {
 
     public void setCount(int countOfGet) {
         this.count = countOfGet;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.CHINA, "{'key':'%s', 'value':'%s', 'createTime':'%d', 'updateTime':'%d', 'deleteTime':'%d', 'count':'%d'}", getKey(), getValue(), getCreateTime(), getUpdateTime(), getDeleteTime(), getCount());
     }
 }

@@ -17,12 +17,12 @@ import java.util.Locale;
  */
 public class DateUtil {
 
-    public static final int TIME_UNIT_SECOND = 1000;
-    public static final int TIME_UNIT_MINUTE = 60 * TIME_UNIT_SECOND;
-    public static final int TIME_UNIT_HOUR = 60 * TIME_UNIT_MINUTE;
-    public static final int TIME_UNIT_DAY = 24 * TIME_UNIT_HOUR;
-    public static final int TIME_UNIT_MONTH = 30 * TIME_UNIT_DAY;
-    public static final int TIME_UNIT_YEAR = 365 * TIME_UNIT_MONTH;
+    public static final long TIME_UNIT_SECOND = 1000;
+    public static final long TIME_UNIT_MINUTE = 60 * TIME_UNIT_SECOND;
+    public static final long TIME_UNIT_HOUR = 60 * TIME_UNIT_MINUTE;
+    public static final long TIME_UNIT_DAY = 24 * TIME_UNIT_HOUR;
+    public static final long TIME_UNIT_MONTH = 30 * TIME_UNIT_DAY;
+    public static final long TIME_UNIT_YEAR = 365 * TIME_UNIT_MONTH;
 
     public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 
