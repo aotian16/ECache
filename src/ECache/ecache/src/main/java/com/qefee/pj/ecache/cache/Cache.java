@@ -9,7 +9,6 @@ import com.qefee.pj.ecache.util.DateUtil;
 import java.util.Date;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 /**
@@ -27,16 +26,11 @@ public class Cache {
      * log tag for Cache
      */
     private static final String TAG = "Cache";
-    private static final String DEFAULT_NAME = "ECache";
 
     private Realm realm;
 
-    public Cache() {
-        realm = Realm.getInstance(new RealmConfiguration.Builder().name(DEFAULT_NAME).build());
-    }
-
-    public Cache(RealmConfiguration configuration) {
-        realm = Realm.getInstance(configuration);
+    public Cache(Realm realm) {
+        this.realm = realm;
     }
 
     public void create(@NonNull final String key, @NonNull final String value, final long during) {

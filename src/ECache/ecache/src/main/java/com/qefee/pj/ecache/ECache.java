@@ -6,7 +6,7 @@ import com.qefee.pj.ecache.cache.Cache;
 import com.qefee.pj.ecache.item.CacheItem;
 import com.qefee.pj.ecache.util.DateUtil;
 
-import io.realm.RealmConfiguration;
+import io.realm.Realm;
 
 /**
  * ECache.
@@ -21,14 +21,11 @@ public class ECache {
     private static Cache cache;
 
     private static Cache getCache() {
-        if (cache == null) {
-            cache = new Cache();
-        }
         return cache;
     }
 
-    public static void init(RealmConfiguration configuration) {
-        cache = new Cache(configuration);
+    public static void init(Realm realm) {
+        cache = new Cache(realm);
     }
 
     public static String get(@NonNull final String key) {
