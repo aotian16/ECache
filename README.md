@@ -1,63 +1,68 @@
-# ECache
-An easy to use android cache based on `SharedPreferences` and `Gson`.
+## ECache
+An easy to use android cache based on `realm`.
 
-There are two level cache in ECache.
+## Support type
 
-1. Memory
-2. SharedPreferences
+| No.  | Type   | Support |
+| :--: | ------ | :-----: |
+|  1   | string |    √    |
 
-# Support type
 
-| No.  | Type       | Support |
-| :--: | ---------- | :-----: |
-|  1   | boolean    |    √    |
-|  2   | int        |    √    |
-|  3   | long       |    √    |
-|  4   | char       |    √    |
-|  5   | float      |    √    |
-|  6   | double     |    √    |
-|  7   | String     |    √    |
-|  8   | Object [1] |    √    |
-|  9   | List       |    √    |
-|  10  | Array      |    √    |
-|  11  | Map        |    √    |
-|  12  | Set        |    √    |
 
-**attention**
+## Usage
 
-[1] Object should support gson
-
-# Usage
+### 1. init realm in your application or first activity
 
 ```java
-		final ECache cache = new ECache(this);
-        String key = "test";
-        int value = 666;
-        int during = DateUtil.TIME_UNIT_HOUR;
-
-        cache.set(key, value, during);
-
-        int def = 0;
-        int i = cache.getInt(key, def);
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().migration(new RealmMigration() {
+            @Override
+            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+                Log.i(TAG, String.format("migrate: oldVersion = %d, newVersion = %d", oldVersion, newVersion));
+            }
+        }).schemaVersion(BuildConfig.VERSION_CODE).name("test").build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        ECache.init(realm);
 ```
 
-# Todo
+### 2. get, set cache
 
-1. auto clear
+```java
+ECache.get(key);
+ECache.set(key, value, during);
+ECache.delete(key);
+```
 
-# Install
 
-1. Download this project
-2. Import this project as a module
-3. Add dependence to ECache
 
-# Version history
+## Install
 
-| No.  | Version | Detail        |
-| ---- | ------- | ------------- |
-| 1    | 1.0.0   | first version |
-| 2    | 2.0.0   | refactor      |
+#### 1 By jitpack.io
 
-# [LICENSE](https://github.com/aotian16/ECache/blob/master/LICENSE)
+```groovy
+    allprojects {
+        repositories {
+            ...
+            maven { url "https://jitpack.io" }
+        }
+    }
+```
+```groovy
+    dependencies {
+            compile 'com.github.aotian16:ECache:v3.0.0'
+    }
+```
+
+#### 2 Or Download this project and import as a module
+
+## Version history
+
+| No.  | Version | Detail         |
+| ---- | ------- | -------------- |
+| 1    | 1.0.0   | first version  |
+| 2    | 2.0.0   | refactor       |
+| 3    | 3.0.0   | based on realm |
+
+## [LICENSE](https://github.com/aotian16/ECache/blob/master/LICENSE)
 
 MIT
