@@ -29,7 +29,7 @@ An easy to use android cache based on `realm`.
 
 ```java
 ECache.get(key);
-ECache.set(key, value, during);
+ECache.set(key, value, DateUtil.TIME_UNIT_MINUTE * 3);
 ECache.delete(key);
 ```
 
