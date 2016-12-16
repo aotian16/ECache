@@ -40,12 +40,26 @@ ECache.delete(key);
 #### 1 By jitpack.io
 
 ```groovy
-    allprojects {
-        repositories {
-            ...
-            maven { url "https://jitpack.io" }
-        }
+buildscript {
+    repositories {
+        jcenter()
     }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+
+        classpath "io.realm:realm-gradle-plugin:2.2.1" // install realm plugin
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
 ```
 ```groovy
     dependencies {
@@ -53,7 +67,27 @@ ECache.delete(key);
     }
 ```
 
+then 
+
 #### 2 Or Download this project and import as a module
+
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+
+        classpath "io.realm:realm-gradle-plugin:2.2.1" // install realm plugin
+    }
+}
+```
+
+
 
 ## Version history
 
